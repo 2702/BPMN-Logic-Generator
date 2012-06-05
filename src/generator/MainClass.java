@@ -5,6 +5,7 @@ import pattern.PatternHandler;
 import pattern.SequencePattern;
 import pattern.SplitPattern;
 import graph.Graph;
+import parser.VisualParadigmXmlParser;
 
 public class MainClass {
 
@@ -12,26 +13,27 @@ public class MainClass {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		Graph graph = new VisualParadigmXmlParser().parse("models/simple.xml");
 		// TODO Auto-generated method stub
-		Graph graph = new Graph();
-		graph.addNode("1", "a");
-		graph.addNode("2", "b1");
-		graph.addNode("3", "b2");
-		graph.addNode("4", "c1");
-		graph.addNode("5", "c2");
-		graph.addNode("6", "d1");
-
-		// split
-		graph.addConnection("1", "2");
-		graph.addConnection("1", "3");
-		// sequence 1
-		graph.addConnection("2", "4");
-		graph.addConnection("3", "5");
-
-		// merge
-		graph.addConnection("4", "6");
-		graph.addConnection("5", "6");
-
+//		Graph graph = new Graph();
+//		graph.addNode("1", "a");
+//		graph.addNode("2", "b1");
+//		graph.addNode("3", "b2");
+//		graph.addNode("4", "c1");
+//		graph.addNode("5", "c2");
+//		graph.addNode("6", "d1");
+//
+//		// split
+//		graph.addConnection("1", "2");
+//		graph.addConnection("1", "3");
+//		// sequence 1
+//		graph.addConnection("2", "4");
+//		graph.addConnection("3", "5");
+//
+//		// merge
+//		graph.addConnection("4", "6");
+//		graph.addConnection("5", "6");
+//
 		System.out.println("*************** przed splitem, merge  i sequencem ************** \n");
 		System.out.println(graph);
 		System.out.println("\n\n\n");
