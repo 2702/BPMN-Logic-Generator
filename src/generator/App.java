@@ -116,7 +116,9 @@ public class App extends JPanel implements ActionListener {
 		sequencehandler.process();
 
 		if (graph.getNodes().size() != 1) {
-			mLog.append("Somethign went wrong...");
+			mLog.append("Something went wrong...");
+			mLog.append("DEBUG:");
+			mLog.append(graph.toString());
 		} else {
 			mLog.append("Generated formula from " + mInFile.getName() + ": \n");
 
