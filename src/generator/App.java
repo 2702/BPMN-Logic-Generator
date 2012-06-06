@@ -7,7 +7,10 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -25,8 +28,8 @@ import pattern.SplitPattern;
 
 public class App extends JPanel implements ActionListener {
 
-	private static String mInFile;
-	private static String mOutFile;
+	private static File mInFile;
+	private static File mOutFile;
 
 	private JButton mOpenButton;
 	private JButton mSaveButton;
@@ -36,11 +39,11 @@ public class App extends JPanel implements ActionListener {
 
 	public App() {
 		super(new BorderLayout());
-		
-		mLog = new JTextArea(5,20);
-        mLog.setMargin(new Insets(5,5,5,5));
-        mLog.setEditable(false);
-        JScrollPane logScrollPane = new JScrollPane(mLog);
+
+		mLog = new JTextArea(5, 20);
+		mLog.setMargin(new Insets(5, 5, 5, 5));
+		mLog.setEditable(false);
+		JScrollPane logScrollPane = new JScrollPane(mLog);
 
 		JLabel inLabel = new JLabel("Input file");
 		add(inLabel);
@@ -50,7 +53,7 @@ public class App extends JPanel implements ActionListener {
 
 		mSaveButton = new JButton("Save a File...");
 		mSaveButton.addActionListener(this);
-		
+
 		mGenerateButton = new JButton("Generate formula!");
 		mGenerateButton.addActionListener(this);
 		mGenerateButton.setEnabled(false);
@@ -62,7 +65,7 @@ public class App extends JPanel implements ActionListener {
 
 		// add(buttonPanel, BorderLayout.PAGE_START);
 		add(buttonPanel, BorderLayout.PAGE_START);
-        add(logScrollPane, BorderLayout.CENTER);
+		add(logScrollPane, BorderLayout.CENTER);
 
 		mFileChooser = new JFileChooser(new File("."));
 	}
@@ -86,44 +89,54 @@ public class App extends JPanel implements ActionListener {
 			int returnVal = mFileChooser.showOpenDialog(this);
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = mFileChooser.getSelectedFile();
-				mInFile = file.getAbsolutePath();
-				mOpenButton.setText(file.getName());
+				mInFile = mFileChooser.getSelectedFile();
+				mOpenButton.setText("In: " + mInFile.getName());
 				mGenerateButton.setEnabled(true);
 			}
 		} else if (e.getSource() == mSaveButton) {
 			int returnVal = mFileChooser.showOpenDialog(this);
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = mFileChooser.getSelectedFile();
-				mOutFile = file.getAbsolutePath();
-//				mLog.append("Output file changed: " + mInFile + "\n");
-				mSaveButton.setText(file.getName());
+				mOutFile = mFileChooser.getSelectedFile();
+				mSaveButton.setText("Out: " + mOutFile.getName());
 			}
 		} else if (e.getSource() == mGenerateButton) {
 			generateFormula();
 		}
 	}
-	
+
 	void generateFormula() {
-		Graph graph = new VisualParadigmXmlParser().parse(mInFile);
-		
-		 PatternHandler splitHandler = new PatternHandler(graph, new
-		 SplitPattern());
-		 PatternHandler mergeHandler = new PatternHandler(graph, new
-		 MergePattern());
-		 PatternHandler sequencehandler = new PatternHandler(graph, new
-		 SequencePattern());
-		 splitHandler.process();
-		 mergeHandler.process();
-		 sequencehandler.process();
-		 
-		 mLog.append("Generated formula: \n");
-		 mLog.append(graph.toString() + "\n");
-		 
-		 if (mOutFile != null) {
-			 //TODO: print to file
-		 }
+		Graph graph = new VisualParadigmXmlParser().parse(mInFile.getAbsolutePath());
+
+		PatternHandler splitHandler = new PatternHandler(graph, new SplitPattern());
+		PatternHandler mergeHandler = new PatternHandler(graph, new MergePattern());
+		PatternHandler sequencehandler = new PatternHandler(graph, new SequencePattern());
+		splitHandler.process();
+		mergeHandler.process();
+		sequencehandler.process();
+
+		if (graph.getNodes().size() != 1) {
+			mLog.append("Somethign went wrong...");
+		} else {
+			mLog.append("Generated formula from " + mInFile.getName() + ": \n");
+
+			final String formula = graph.getNodes().get(0).getFormula();
+			mLog.append("\t" + formula + "\n");
+			// mLog.append("DEBUG: \n" + graph.toString() + "\n");
+
+			if (mOutFile != null) {
+				// TODO: print to file
+				BufferedWriter out;
+				try {
+					out = new BufferedWriter(new FileWriter(mOutFile));
+					out.write(formula);
+					out.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	/**
@@ -131,7 +144,7 @@ public class App extends JPanel implements ActionListener {
 	 */
 	public static void main(String[] args) {
 		createAndShowGUI();
-		// 
+		//
 		// TODO Auto-generated method stub
 		// Graph graph = new Graph();
 		// graph.addNode("1", "a");
