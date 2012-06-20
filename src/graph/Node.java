@@ -1,13 +1,29 @@
 package graph;
 
+
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Stack;
+
+class MarkerHolder{
+	Marker marker;
+	public MarkerHolder(Marker marker){
+		this.marker = marker;
+	}
+}
 
 public class Node {
 
-	// podwojne wiazanie jest dla ulatwienia implementacji algorytmow
-	ArrayList<Node> outNodes; // lista wezlow z krawedzi wychodzacych
-	ArrayList<Node> inNodes; // lista wezlow z krawedzi przychodzacych
+	boolean isInDeadDiamond = false; // sprawdza czy wezel nalezy do deaddiamonda
+	
+	public boolean isInDeadDiamond() {
+		return isInDeadDiamond;
+	}
+
+	public void setInDeadDiamond(boolean isInDeadDiamond) {
+		this.isInDeadDiamond = isInDeadDiamond;
+	}
+
+
 	Marker marker; // enum oznaczajacy dopasowanie danego wezla do wzorca
 	private String id; // id wezla nie majace nic wspolnego z zawartoscia pola formula.
 			// potrzebne tylko do sprawnych operacji na grafie
@@ -15,13 +31,35 @@ public class Node {
 					// bedzie identyfikator pobrany z xmla, a potem cos bardziej
 					// zlozonego
 
+//	Stack<Marker> branchStack; // przechowuje informacje jak gleboko jest zagniezdzony dany wezel
+	
+	ArrayList<MarkerHolder> branchStack;
+	
+	public void pushOnStack (Marker marker){
+		branchStack.add(new MarkerHolder(marker));
+	}
+	
+	public void popFromStack (){
+		branchStack.remove(branchStack.size()-1);
+	}
+	
+	public Marker peekOnStack(){
+		return branchStack.get(branchStack.size()-1).marker;
+	}
+	
+	
+	public ArrayList<MarkerHolder> getBranchStack() {
+		return branchStack;
+	}
+
 	// licznik wezlow, do tworzenia unikalnych ID
 	static int counter = 0;
 
 	public Node() {
 		Node.counter++;
-		outNodes = new ArrayList<Node>();
-		inNodes = new ArrayList<Node>();
+//		outNodes = new ArrayList<Node>();
+//		inNodes = new ArrayList<Node>();
+		branchStack = new ArrayList<MarkerHolder>();
 	}
 
 	public Node(String formula) {
@@ -32,7 +70,7 @@ public class Node {
 	public Node(String id, String formula) {
 		this(formula);
 		this.id = id;
-		this.marker = Marker.UNTOUCHED;
+		this.marker = Marker.UNMARKED;
 	}
 
 	public Node(String formula, Marker marker) {
@@ -40,55 +78,12 @@ public class Node {
 		this.marker = marker;
 	}
 
-	public void connectWithOtherNode(Node other) {
-		outNodes.add(other);
-		other.connectInNode(this);
+
+
+	public String toString(){
+		return (isInDeadDiamond ? "(D) " : "") + this.id + " "+ marker.toString();
 	}
-
-	public void connectInNode(Node other) {
-		inNodes.add(other);
-	}
-
-	public String toString() {
-		String outputString = "Node id: " + id + " formula: " + formula
-				+ " marker: " + marker + " hash: " + this.hashCode() + " \n";
-
-		if (!outNodes.isEmpty()) {
-			outputString += "   OutNodes:\n";
-			for (Node node : outNodes) {
-				outputString += "   -Node id: " + node.id + " formula: "
-						+ node.formula + " marker: " + node.marker + " hash: "
-						+ node.hashCode() + " \n";
-			}
-		}
-
-		if (!inNodes.isEmpty()) {
-			outputString += "   InNodes:\n";
-			for (Node node : inNodes) {
-				outputString += "   -Node id: " + node.id + " formula: "
-						+ node.formula + " marker: " + node.marker + " hash: "
-						+ node.hashCode() + " \n";
-			}
-		}
-		return outputString + "\n";
-	}
-
-	public ArrayList<Node> getOutNodes() {
-		return outNodes;
-	}
-
-	public void setOutNodes(ArrayList<Node> outNodes) {
-		this.outNodes = outNodes;
-	}
-
-	public ArrayList<Node> getInNodes() {
-		return inNodes;
-	}
-
-	public void setInNodes(ArrayList<Node> inNodes) {
-		this.inNodes = inNodes;
-	}
-
+	
 	public Marker getMarker() {
 		return marker;
 	}
@@ -103,28 +98,6 @@ public class Node {
 
 	public void setFormula(String formula) {
 		this.formula = formula;
-	}
-
-	public void removeInNode(Node node) {
-		inNodes.remove(node);
-	}
-
-	public void removeOutNode(Node node) {
-		outNodes.remove(node);
-	}
-
-	/** Removes duplicated connections from Node
-	 * 
-	 */
-	public void cleanupEdges() {
-		HashSet<Node> hs = new HashSet<Node>();
-		hs.addAll(inNodes);
-		inNodes.clear();
-		inNodes.addAll(hs);
-		hs.clear();
-		hs.addAll(outNodes);
-		outNodes.clear();
-		outNodes.addAll(hs);
 	}
 
 	public void setId(String id) {

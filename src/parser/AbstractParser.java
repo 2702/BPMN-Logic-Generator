@@ -1,6 +1,8 @@
 package parser;
 
-import graph.Graph;
+import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
+import graph.Node;
+
 
 /**
  * Abstract class for parsing BPMN XML files
@@ -9,5 +11,5 @@ import graph.Graph;
  */
 public abstract class AbstractParser {
 	
-	public abstract Graph parse(String filename);
+	public abstract DirectedSparseMultigraph<Node,String> parse(String filename);
 }
