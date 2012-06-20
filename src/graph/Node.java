@@ -73,6 +73,11 @@ public class Node {
 		this.marker = Marker.UNMARKED;
 	}
 
+	public Node (String id, String formula, Marker marker){
+		this (id, formula);
+		this.marker=marker;
+	}
+	
 	public Node(String formula, Marker marker) {
 		this(formula);
 		this.marker = marker;

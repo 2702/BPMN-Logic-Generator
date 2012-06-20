@@ -97,6 +97,8 @@ public class VisualParadigmXmlParser extends AbstractParser {
 			// there is exactly o
 			Element gatewayType = (Element)el.getElementsByTagName("GatewayType").item(0);
 			
+			
+			// TODO tu nie dziala wyciaganie nazwy node'a -.-'
 			if (gatewayType.getFirstChild().getNodeName().equals("BPGatewayDataBasedXOR") ||
 					gatewayType.getFirstChild().getNodeName().equals("BPGatewayEventBasedXOR"))
 				node.setMarker(Marker.EXCLUSIVE_CHOICE);
@@ -105,7 +107,7 @@ public class VisualParadigmXmlParser extends AbstractParser {
 			if (gatewayType.getFirstChild().getNodeName().equals("BPGatewayComplex"))
 				node.setMarker(Marker.MULTI_CHOICE);
 			
-			System.out.println( gatewayType.getChildNodes());
+			
 				
 //			BPGatewayDataBasedXOR
 //			BPGatewayAND
