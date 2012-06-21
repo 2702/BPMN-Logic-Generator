@@ -5,7 +5,7 @@ import edu.uci.ics.jung.graph.util.EdgeType;
 import exceptions.NodeNotFoundException;
 
 @SuppressWarnings("serial")
-public class DirectedGraph extends  DirectedSparseMultigraph <Node, String>{
+public class DirectedGraph extends  DirectedSparseMultigraph <Node, Edge>{
 	
 	//TODO dorobic obsluge wyjatku gdy nie ma id
 	private Node findVertexById(String id) throws NodeNotFoundException{
@@ -16,12 +16,18 @@ public class DirectedGraph extends  DirectedSparseMultigraph <Node, String>{
 		throw new NodeNotFoundException();
 	}
 	
-	public void addEdge (String edgeName,String from,String to){
-		try{
-			super.addEdge(edgeName,findVertexById(from),findVertexById(to), EdgeType.DIRECTED );
-		}catch (NodeNotFoundException e){
-			System.out.println("problem...");
-		}
-		
+	public void addEdge (Node from, Node to){
+		addEdge (from.getId(), to.getId());
 	}
+	
+	public void addEdge (String from,String to){
+		try{
+			super.addEdge(new Edge(),findVertexById(from),findVertexById(to), EdgeType.DIRECTED );
+		}catch (NodeNotFoundException e){
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
 }

@@ -86,7 +86,7 @@ public class Node {
 
 
 	public String toString(){
-		return (isInDeadDiamond ? "(D) " : "") + this.id + " "+ marker.toString()+ " " + formula;
+		return (isInDeadDiamond ? "(D) " : "") + this.id + " ("+ marker.toString()+ ") " + formula;
 	}
 	
 	public Marker getMarker() {
@@ -115,8 +115,8 @@ public class Node {
 
 	public String printStack() {
 		String outputString = new String();
-		for (MarkerHolder marker : branchStack){
-			outputString = outputString.concat(" " + marker);
+		for (int i=branchStack.size() -1; i >= 0; i--){
+			outputString = outputString.concat("  " +i+ "." + branchStack.get(i).marker.toString() + "\n");
 		}
 		return outputString;
 	}

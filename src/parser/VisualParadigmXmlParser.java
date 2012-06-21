@@ -136,7 +136,7 @@ public class VisualParadigmXmlParser extends AbstractParser {
 			final String fromId = el.getAttribute("From");
 			final String toId = el.getAttribute("To");
 			System.out.println("Trying New connection: " + fromId + "--->" + toId);
-			mGraph.addEdge(fromId + toId, fromId , toId);
+			mGraph.addEdge(fromId , toId);
 //			System.out.println("New connection: " + fromId + "--->" + toId);
 		}
 	}

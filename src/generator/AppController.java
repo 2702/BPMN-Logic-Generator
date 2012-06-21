@@ -15,8 +15,8 @@ public class AppController {
 	PatternFinder patternFinder;
 	
 	AppController(){
-		createAndShowGUI();
 		patternFinder = new PatternFinder();
+		createAndShowGUI();
 	}
 	
 	public void loadGraph(DirectedGraph graph){
@@ -43,6 +43,9 @@ public class AppController {
 		// Display the window.
 		frame.setSize(new Dimension(1000, 700));
 		frame.setVisible(true);
+
+		//do wywalenia
+		mAppView.testOnly();
 	}
 
 	public void generateFormula(){
@@ -53,7 +56,7 @@ public class AppController {
 	public void markVertices(){
 		int count = patternFinder.markNodes();
 		mAppView.printToConsole(count + " nowych markerow");
-		refresh();
+		mAppView.refreshNodeCaptions(graph);
 	}
 	
 	public DirectedGraph getGraph() {
