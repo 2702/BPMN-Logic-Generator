@@ -33,8 +33,9 @@ public class AppController {
 		
 		// Create and set up the window.
 		JFrame frame = new JFrame("Generator");
+		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		frame.setResizable(false);
 		mAppView = new AppView(this);
 		// Add content to the window.
 		frame.add(mAppView);
@@ -44,6 +45,11 @@ public class AppController {
 		frame.setVisible(true);
 	}
 
+	public void generateFormula(){
+		patternFinder.generateFormulas();
+		refresh();
+	}
+	
 	public void markVertices(){
 		int count = patternFinder.markNodes();
 		mAppView.printToConsole(count + " nowych markerow");

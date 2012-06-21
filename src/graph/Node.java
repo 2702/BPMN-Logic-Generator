@@ -25,9 +25,9 @@ public class Node {
 
 
 	Marker marker; // enum oznaczajacy dopasowanie danego wezla do wzorca
-	private String id; // id wezla nie majace nic wspolnego z zawartoscia pola formula.
+	private String id = ""; // id wezla nie majace nic wspolnego z zawartoscia pola formula.
 			// potrzebne tylko do sprawnych operacji na grafie
-	String formula; // formula jaka przechowuje dany wezel. na poczatku to
+	String formula = ""; // formula jaka przechowuje dany wezel. na poczatku to
 					// bedzie identyfikator pobrany z xmla, a potem cos bardziej
 					// zlozonego
 
@@ -86,7 +86,7 @@ public class Node {
 
 
 	public String toString(){
-		return (isInDeadDiamond ? "(D) " : "") + this.id + " "+ marker.toString();
+		return (isInDeadDiamond ? "(D) " : "") + this.id + " "+ marker.toString()+ " " + formula;
 	}
 	
 	public Marker getMarker() {
@@ -111,5 +111,13 @@ public class Node {
 
 	public String getId() {
 		return id;
+	}
+
+	public String printStack() {
+		String outputString = new String();
+		for (MarkerHolder marker : branchStack){
+			outputString = outputString.concat(" " + marker);
+		}
+		return outputString;
 	}
 }
