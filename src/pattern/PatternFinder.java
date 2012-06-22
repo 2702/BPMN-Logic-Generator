@@ -45,19 +45,52 @@ public class PatternFinder {
 
 	
 	
-	public void generateFormulas(){
+	public int generateFormulas(){
+		int counter =0;
 		while (cleanupTripleSequences() > 0){
-			
+			counter++;
 		}
 		
-		dispatchHighestLevelMerge();
-		dispatchHighestLevelSplit();
+		counter += dispatchHighestLevelMerge();
+		counter += dispatchHighestLevelSplit();
+		if (counter == 0){ // czyli zostala prosta linia (same sekwencje)
+			dispatchLastSequence();
+		}
 		markNodes();
+		return counter;
+	}
+
+	// wyszukuje ostatni wezel ktory nie ma nastepcow
+	//TODO dorobic wyrzucanie wyjatku zamiast nulla
+	private Node findLastNode(){
+		for (Node node : graph.getVertices()){
+			if (graph.getSuccessorCount(node) == 0 )
+				return node;
+		}
+		return null;
+	}
+	
+	private void dispatchLastSequence(){
+		while (graph.getVertexCount()>1){
+			deleteSequenceNode(findLastNode());
+		}
+	}
+	
+	
+	// zakladamy ze nie ma juz zadnych nastepcow
+	// czyli wywolujemy na ostatnim
+	private void deleteSequenceNode(Node node){
+		try{
+			Node previousNode = getPredecessor(node);
+			previousNode.setFormula(mFormulaParser.getSequenceFormula(previousNode.getFormula(), node.getFormula()));
+			graph.removeVertex(node);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	// oznacza graf markerami
 	public int markNodes(){
-		
 		markCounter = 0;
 		markSequences(findRoot());
 		clearBranchStacks();
@@ -151,7 +184,7 @@ public class PatternFinder {
 				Node predecessor = getPredecessor(node);
 				graph.addEdge(predecessor, getSuccessor(node));
 				predecessor.setFormula(mFormulaParser.getSequenceFormula(predecessor.getFormula(), node.getFormula()));
-				System.out.println(node.getId()+ ": usuwam");
+				System.out.println(node.getId()+ ": usuwam (srodkowy z trojki)");
 				graph.removeVertex(node);
 			}catch (NodeTypeMismatchException e){
 				e.printStackTrace();
@@ -202,13 +235,14 @@ public class PatternFinder {
 			deleteSplitNode(gatewayList.get(i));
 			i = i-1;
 			counter++;
+			if (i <0) break; // zabezpieczenie przed array out of bonds
 		}
 		return counter;
 	}
 	
 	// obsluga usuwania wezla split
 	private void deleteSplitNode(Node node){
-		System.out.println(node.getId()+ ": usuwam");
+		System.out.println(node.getId()+ ": usuwam (split)");
 		ArrayList<Node> nodesToDelete = new ArrayList<Node>();
 		ArrayList<String> neighbourFormulas = new ArrayList<String>();// do przekazania parserowi formul
 		neighbourFormulas.add(node.getFormula());
@@ -238,6 +272,7 @@ public class PatternFinder {
 				gatewayList.add(node);
 			}
 		}
+		System.out.println ("gatewayList size: " + gatewayList.size());
 		if (gatewayList.size() == 0) return 0;
 		Collections.sort(gatewayList, new Comparator<Node>() {
 			@Override
@@ -257,6 +292,7 @@ public class PatternFinder {
 			deleteMergeNode(gatewayList.get(i));
 			i = i-1;
 			counter++;
+			if (i <0) break; // zabezpieczenie przed array out of bonds
 		}
 		
 		return counter;
@@ -264,7 +300,7 @@ public class PatternFinder {
 	
 	// obsluga usuwania wezla split
 	private void deleteMergeNode(Node node){
-		System.out.println(node.getId()+ ": usuwam");
+		System.out.println(node.getId()+ ": usuwam (merge)");
 		ArrayList<Node> nodesToDelete = new ArrayList<Node>();
 		ArrayList<String> neighbourFormulas = new ArrayList<String>();// do przekazania parserowi formul
 		neighbourFormulas.add(node.getFormula());

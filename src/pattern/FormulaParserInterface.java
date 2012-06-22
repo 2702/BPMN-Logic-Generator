@@ -3,7 +3,6 @@ package pattern;
 import graph.Marker;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 // intefejs klasy parsujacej plik wejsciowy z formulami
 public interface FormulaParserInterface {

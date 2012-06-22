@@ -13,6 +13,7 @@ public class AppController {
 	AppView mAppView;
 	DirectedGraph graph;
 	PatternFinder patternFinder;
+	int iterationCounter = 0;
 	
 	AppController(){
 		patternFinder = new PatternFinder();
@@ -49,8 +50,18 @@ public class AppController {
 	}
 
 	public void generateFormula(){
-		patternFinder.generateFormulas();
+		System.out.println("=== " + iterationCounter + " iteracja ===");
+		mAppView.printToConsole("=== " + iterationCounter + " iteracja ===");
+		int operationCounter = 0;
+		operationCounter = patternFinder.generateFormulas();
 		refresh();
+		if (operationCounter == 0){// czyli zakonczono zwijanie grafu
+			mAppView.printToConsole("Odnaleziona formula:");
+			mAppView.printToConsole( graph.getRemaningNode().getFormula()  );
+			mAppView.foundFormulaHandling();
+			
+		}
+		iterationCounter++;
 	}
 	
 	public void markVertices(){

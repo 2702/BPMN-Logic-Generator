@@ -28,6 +28,11 @@ public class DirectedGraph extends  DirectedSparseMultigraph <Node, Edge>{
 		}
 	}
 	
-	
+	public Node getRemaningNode(){
+		for (Node node: this.getVertices()){
+			return node;
+		}
+		return null;
+	}
 	
 }

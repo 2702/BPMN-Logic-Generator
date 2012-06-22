@@ -25,6 +25,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import parser.VisualParadigmXmlParser;
 
@@ -46,7 +47,7 @@ public class AppView extends JPanel implements ActionListener {
 	private JButton mOpenButton;
 	private JButton mSaveButton;
 	private JButton mGenerateButton;
-	private JButton mMarkButton;
+	
 	private JFileChooser mFileChooser;
 	private JTextArea mLog;
 	private JTextArea mGraphStatus;
@@ -73,7 +74,9 @@ public class AppView extends JPanel implements ActionListener {
 		mLog = new JTextArea(8, 80);
 		mLog.setMargin(new Insets(5, 5, 5, 5));
 		mLog.setEditable(false);
+		mLog.setLineWrap(true);
 		JScrollPane logScrollPane = new JScrollPane(mLog);
+		logScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		/* buttons */
 		mOpenButton = new JButton("Open a File...");
 		mOpenButton.addActionListener(this);
@@ -85,10 +88,6 @@ public class AppView extends JPanel implements ActionListener {
 		mGenerateButton.addActionListener(this);
 		mGenerateButton.setEnabled(false);
 
-		mMarkButton = new JButton ("Mark graph");
-		mMarkButton.addActionListener(this);
-		mMarkButton.setEnabled(false);
-		
 		mGraphGeneratingButton = new JButton ("generate sample graph");
 		mGraphGeneratingButton.addActionListener(this);
 		
@@ -96,7 +95,6 @@ public class AppView extends JPanel implements ActionListener {
 		buttonPanel.add(mOpenButton);
 		buttonPanel.add(mSaveButton);
 		buttonPanel.add(mGenerateButton);
-		buttonPanel.add(mMarkButton);
 		buttonPanel.add(mGraphGeneratingButton);
 //		buttonPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
@@ -127,7 +125,6 @@ public class AppView extends JPanel implements ActionListener {
 				mInFile = mFileChooser.getSelectedFile();
 				mOpenButton.setText("In: " + mInFile.getName());
 				mGenerateButton.setEnabled(true);
-				mMarkButton.setEnabled(true);
 				owner.loadGraph(new VisualParadigmXmlParser().parse(mInFile.getAbsolutePath()));
 				owner.refresh();
 				mLog.setText("");
@@ -144,9 +141,6 @@ public class AppView extends JPanel implements ActionListener {
 		} else if (e.getSource() == mGraphGeneratingButton){
 			generateSampleGraph();
 			mGenerateButton.setEnabled(true);
-			mMarkButton.setEnabled(true);
-		} else if (e.getSource() == mMarkButton){
-			markGraph();
 		}
 	}
 
@@ -154,7 +148,6 @@ public class AppView extends JPanel implements ActionListener {
 	public void testOnly(){
 		generateSampleGraph();
 		mGenerateButton.setEnabled(true);
-		mMarkButton.setEnabled(true);
 		markGraph();
 	}
 	
@@ -265,5 +258,12 @@ public class AppView extends JPanel implements ActionListener {
 	public void printToConsole(String message){
 		mLog.append( logNumber + ": " + message + "\n");
 		logNumber++;
+	}
+
+	public void foundFormulaHandling() {
+		mGraphGeneratingButton.setEnabled(false);
+		mGenerateButton.setEnabled(false);
+		
+		
 	}
 }
