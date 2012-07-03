@@ -3,6 +3,8 @@ package generator;
 import graph.DirectedGraph;
 
 import java.awt.Dimension;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 
@@ -14,27 +16,27 @@ public class AppController {
 	DirectedGraph graph;
 	PatternFinder patternFinder;
 	int iterationCounter = 0;
-	
-	AppController(){
+
+	AppController() {
 		patternFinder = new PatternFinder();
 		createAndShowGUI();
 	}
-	
-	public void loadGraph(DirectedGraph graph){
+
+	public void loadGraph(DirectedGraph graph) {
 		this.graph = graph;
 		patternFinder.setGraph(graph);
 	}
-	
-	//rysuje na nowo graf
-	public void refresh(){
+
+	// rysuje na nowo graf
+	public void refresh() {
 		mAppView.drawGraph(graph);
 	}
-	
+
 	private void createAndShowGUI() {
-		
+
 		// Create and set up the window.
 		JFrame frame = new JFrame("Generator");
-		
+
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		mAppView = new AppView(this);
@@ -45,31 +47,42 @@ public class AppController {
 		frame.setSize(new Dimension(1000, 700));
 		frame.setVisible(true);
 
-		//do wywalenia
+		// do wywalenia
 		mAppView.testOnly();
 	}
 
-	public void generateFormula(){
+	public void generateFormula() {
 		System.out.println("=== " + iterationCounter + " iteracja ===");
 		mAppView.printToConsole("=== " + iterationCounter + " iteracja ===");
 		int operationCounter = 0;
 		operationCounter = patternFinder.generateFormulas();
 		refresh();
-		if (operationCounter == 0){// czyli zakonczono zwijanie grafu
+		if (operationCounter == 0) {// czyli zakonczono zwijanie grafu
+			final String finalFormula = graph.getRemaningNode().getFormula();
 			mAppView.printToConsole("Odnaleziona formula:");
-			mAppView.printToConsole( graph.getRemaningNode().getFormula()  );
+			mAppView.printToConsole(finalFormula);
 			mAppView.foundFormulaHandling();
 			
+			if (mAppView.getOutFile() != null) {
+				try {
+					FileWriter writer = new FileWriter(mAppView.getOutFile());
+					writer.write(finalFormula);
+					writer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
 		}
 		iterationCounter++;
 	}
-	
-	public void markVertices(){
+
+	public void markVertices() {
 		int count = patternFinder.markNodes();
 		mAppView.printToConsole(count + " nowych markerow");
 		mAppView.refreshNodeCaptions(graph);
 	}
-	
+
 	public DirectedGraph getGraph() {
 		return graph;
 	}
@@ -77,5 +90,5 @@ public class AppController {
 	public void setGraph(DirectedGraph graph) {
 		this.graph = graph;
 	}
-	
+
 }
