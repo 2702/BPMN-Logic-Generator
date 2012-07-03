@@ -16,6 +16,7 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 
 import parser.VisualParadigmXmlParser;
+import pattern.FormulaParser;
 import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
@@ -244,7 +245,7 @@ public class AppView extends JPanel implements ActionListener {
 	 */
 	public static void main(String[] args) {
 		new AppController();
-		// edu.uci.ics.jung.samples.ShowLayouts.main(args);
+		 edu.uci.ics.jung.samples.ShowLayouts.main(args);
 	}
 
 	public void printToConsole(String message) {
