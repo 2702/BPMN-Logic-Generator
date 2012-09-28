@@ -43,6 +43,7 @@ public class AppView extends JPanel implements ActionListener {
 	private JButton mOpenButton;
 	private JButton mSaveButton;
 	private JButton mGenerateButton;
+        private JButton mQuickGenerate;
 
 	private JFileChooser mFileChooser;
 	private JTextArea mLog;
@@ -84,6 +85,10 @@ public class AppView extends JPanel implements ActionListener {
 		mGenerateButton.addActionListener(this);
 		mGenerateButton.setEnabled(false);
 
+                mQuickGenerate = new JButton ("Quick generate");
+                mQuickGenerate.addActionListener(this);
+                mQuickGenerate.setEnabled(false);
+
 		mGraphGeneratingButton = new JButton("generate sample graph");
 		mGraphGeneratingButton.addActionListener(this);
 
@@ -91,6 +96,7 @@ public class AppView extends JPanel implements ActionListener {
 		buttonPanel.add(mOpenButton);
 		buttonPanel.add(mSaveButton);
 		buttonPanel.add(mGenerateButton);
+                buttonPanel.add(mQuickGenerate);
 		buttonPanel.add(mGraphGeneratingButton);
 		// buttonPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
@@ -119,6 +125,7 @@ public class AppView extends JPanel implements ActionListener {
 				mInFile = mFileChooser.getSelectedFile();
 				mOpenButton.setText("In: " + mInFile.getName());
 				mGenerateButton.setEnabled(true);
+                                mQuickGenerate.setEnabled(true);
 				owner.loadGraph(new VisualParadigmXmlParser().parse(mInFile.getAbsolutePath()));
 				owner.refresh();
 				mLog.setText("");
@@ -133,15 +140,20 @@ public class AppView extends JPanel implements ActionListener {
 		} else if (e.getSource() == mGenerateButton) {
 			generateFormula();
 		} else if (e.getSource() == mGraphGeneratingButton) {
-			generateSampleGraph();
+			testOnly();
 			mGenerateButton.setEnabled(true);
-		}
+		} else if (e.getSource() == mQuickGenerate) {
+                        generateFormulaInOneClick();
+                }
+                        
+
 	}
 
 	// do wywalenia
 	public void testOnly() {
 		generateSampleGraph();
 		mGenerateButton.setEnabled(true);
+                mQuickGenerate.setEnabled(true);
 		markGraph();
 	}
 
@@ -239,13 +251,6 @@ public class AppView extends JPanel implements ActionListener {
 		// printToConsole("Wykonano 1 iteracje");
 	}
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		new AppController();
-//		 edu.uci.ics.jung.samples.ShowLayouts.main(args);
-	}
 
 	public void printToConsole(String message) {
 		mLog.append(logNumber + ": " + message + "\n");
@@ -255,6 +260,7 @@ public class AppView extends JPanel implements ActionListener {
 	public void foundFormulaHandling() {
 		mGraphGeneratingButton.setEnabled(false);
 		mGenerateButton.setEnabled(false);
+                mQuickGenerate.setEnabled(false);
 
 	}
 
@@ -265,4 +271,9 @@ public class AppView extends JPanel implements ActionListener {
 	public File getOutFile() {
 		return mOutFile;
 	}
+
+    private void generateFormulaInOneClick() {
+        owner.generateFormulaInOneClick();
+        mGenerateButton.setEnabled(true);
+    }
 }

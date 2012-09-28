@@ -48,13 +48,14 @@ public class AppController {
 		frame.setVisible(true);
 
 		// do wywalenia
-		mAppView.testOnly();
+//		mAppView.testOnly();
 	}
 
 	public void generateFormula() {
 		System.out.println("=== " + iterationCounter + " iteracja ===");
 		mAppView.printToConsole("=== " + iterationCounter + " iteracja ===");
 		int operationCounter = 0;
+                markVertices();
 		operationCounter = patternFinder.generateFormulas();
 		refresh();
 		if (operationCounter == 0) {// czyli zakonczono zwijanie grafu
@@ -90,5 +91,10 @@ public class AppController {
 	public void setGraph(DirectedGraph graph) {
 		this.graph = graph;
 	}
+
+    void generateFormulaInOneClick() {
+        while (graph.getVertexCount()>1)
+            generateFormula();
+    }
 
 }

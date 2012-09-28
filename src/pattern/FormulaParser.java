@@ -18,13 +18,13 @@ public class FormulaParser implements FormulaParserInterface {
 
 	static Map<String, String> mFormulas = new HashMap<String, String>();
 
-	static {
-		mFormulas.put("Sequence", "(%1$s) => <>(%2$s)");
-		mFormulas.put("Exclusive-Choice", "(%1$s) => (<>(%2$s) & ~<>(%3$s))|(~<>(%2$s) & <>(%3$s))");
-		mFormulas.put("Parallel-Split", "(%1$s) => <>(%2$s) & <>(%3$s)");
-		mFormulas.put("Synchronization", "(%1$s) & (%2$s) => <>(%3$s)");
-		mFormulas.put("Simple-Merge", "(%1$s) | (%2$s) => <>(%3$s)");
-	}
+//	static {
+//		mFormulas.put("Sequence", "(%1$s) => <>(%2$s)");
+//		mFormulas.put("Exclusive-Choice", "(%1$s) => (<>(%2$s) & ~<>(%3$s))|(~<>(%2$s) & <>(%3$s))");
+//		mFormulas.put("Parallel-Split", "(%1$s) => <>(%2$s) & <>(%3$s)");
+//		mFormulas.put("Synchronization", "(%1$s) & (%2$s) => <>(%3$s)");
+//		mFormulas.put("Simple-Merge", "(%1$s) | (%2$s) => <>(%3$s)");
+//	}
 
 	/** Reads pattern definitions from special file
 	 * 
@@ -53,7 +53,7 @@ public class FormulaParser implements FormulaParserInterface {
 					String[] argnames = args.split(",");
 
 					for (int i = 0; i < argnames.length; i++) {
-						def = def.replace(argnames[i], "%" + (i + 1) + "$s");
+						def = def.replace(argnames[i], "(%" + (i + 1) + "$s)");
 					}
 					mFormulas.put(name, def);
 					System.out.println(line + "\n" + def + "\n" + name + "       " + argnames);
@@ -81,7 +81,7 @@ public class FormulaParser implements FormulaParserInterface {
 
 	@Override
 	public String getMergeFormula(ArrayList<String> formulas, Marker marker) {
-		if (marker.equals(Marker.PARALLEL_SPLIT))
+		if (marker.equals(Marker.PARALLEL_SPLIT)) //Paralel_split dlatego, ze z drugiej strony sie tym rozdzielil
 			return String.format(mFormulas.get("Synchronization"), formulas.toArray());
 		if (marker.equals(Marker.EXCLUSIVE_CHOICE)) // na razie traktujemy to simple merge'em
 			return String.format(mFormulas.get("Simple-Merge"), formulas.toArray());

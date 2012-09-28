@@ -6,6 +6,9 @@ import graph.Node;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
@@ -25,12 +28,12 @@ public class VisualParadigmXmlParser extends AbstractParser {
 	@Override
 	public DirectedGraph parse(String filename) {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                dbf.setNamespaceAware(true);
 		dbf.setIgnoringComments(true);
 		dbf.setIgnoringElementContentWhitespace(true);
 
 		DocumentBuilder db;
-		try {
-			XPathFactory xpathFactory = XPathFactory.newInstance();
+		try {			
 			db = dbf.newDocumentBuilder();
 			Document dom = db.parse(filename);
 
@@ -47,7 +50,10 @@ public class VisualParadigmXmlParser extends AbstractParser {
 			parseGateways(gateways);
 
 			// Every sequence is connection between nodes
-			NodeList sequences = modelsElement.getElementsByTagName("BPSequenceFlow");
+                        XPathFactory xpathFactory = XPathFactory.newInstance();
+                        XPath xPath = xpathFactory.newXPath();
+                        XPathExpression xPathExpressionSequences = xPath.compile("//Models//ModelChildren//BPSequenceFlow");
+                        NodeList sequences = (NodeList) xPathExpressionSequences.evaluate(dom, XPathConstants.NODESET);
 			parseSequences(sequences);
 
 			// TODO: more!

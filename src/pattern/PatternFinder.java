@@ -15,7 +15,7 @@ public class PatternFinder {
 	private int markCounter = 0; // oznacza ile bylo markow
 	
 	DirectedGraph graph;
-	FormulaParserInterface mFormulaParser;
+	FormulaParser mFormulaParser;
 	
 	
 
@@ -32,6 +32,7 @@ public class PatternFinder {
 	public PatternFinder(){
 		mCleanupTripleSequenceList = new ArrayList<Node>();
 		mFormulaParser = new FormulaParser();
+                mFormulaParser.readPatternDefinitions("patterns-TL.txt");
 	}
 	
 	//TODO zwraca nulla zamiast rzucac wyjatek
@@ -95,6 +96,7 @@ public class PatternFinder {
 		markSequences(findRoot());
 		clearBranchStacks();
 		fillBranchStacks(findRoot());
+                markInformalNodes(findRoot());
 		return markCounter;
 	}
 	
@@ -320,6 +322,19 @@ public class PatternFinder {
 		node.setFormula(mFormulaParser.getMergeFormula(neighbourFormulas, node.getMarker()));
 		node.setMarker(Marker.UNMARKED);
 	}
+
+    // ustawia markery wszystkim nie do konca prawidlowym splitom i merom 
+    private void markInformalNodes(Node node) {
+        if (graph.getPredecessorCount(node)>1){
+                node.setMarker(Marker.PARALLEL_SPLIT);
+        }
+        if (graph.getSuccessorCount(node)>1){
+                node.setMarker(Marker.PARALLEL_SPLIT);
+        }
+        for (Node nextNode : graph.getSuccessors(node)){
+                markInformalNodes(nextNode);
+        }
+    }
 	
 }
 

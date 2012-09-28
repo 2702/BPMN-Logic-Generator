@@ -1,0 +1,30 @@
+                 /* version 24.07.2011
+/* Basic Control Patterns
+Sequence(f1,f2):
+f1 => <>f2
+Parallel-Split(f1,f2,f3):
+f1 => <>f2 & <>f3
+[]~(f1&(f2|f3))
+Synchronization(f1,f2,f3):
+f1 & f2 => <>f3
+[]~(f3&(f1|f2))
+Exclusive-Choice(f1,f2,f3):
+f1 => (<>f2 & ~<>f3)|(~<>f2 & <>f3)
+[]~(f2 & f3)
+Simple-Merge(f1,f2,f3):
+f1|f2 => <>f3
+[]~(f3&(f1|f2))
+
+/* others
+Multi-Choice(f1,f2,f3):
+f1 => <>f2|<>f3
+Multi-Merge(f1,f2,f3,f4):
+f1 => <>f2 & <>f3 & <>f4
+f2 => <>f4
+f3 => <>f4
+Discriminator(f1,f2,f3,f4):
+f1 => <>f2 & <>f3
+f1|f2 => <>f4
+Synchronizing-Merge(f1,f2,f3,f4):
+f1 => (<>f2&~<>f3&<>f4)|(<>f2&<>f3&<>f4)
+f2|f3 => <>f4
